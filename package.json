@@ -1,0 +1,49 @@
+{
+  "name": "@oimlsmart/oiml-pubid",
+  "version": "1.0.0",
+  "description": "The OIML publication identifier system: the parser and the URN convention \u2014 the single source of truth for every OIML SMART consumer.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oimlsmart/oiml-pubid"
+  },
+  "author": "OIML SMART project",
+  "exports": {
+    ".": {
+      "browser": "./dist-browser/index.mjs",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./conformance": "./conformance/identifiers.json"
+  },
+  "scripts": {
+    "build": "tsc && vite build --config vite.browser.config.ts",
+    "test": "node --test --import tsx test/*.test.ts"
+  },
+  "files": [
+    "dist/",
+    "dist-browser/",
+    "conformance/",
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "oiml",
+    "pubid",
+    "urn",
+    "publication-identifier",
+    "metrology",
+    "metanorma"
+  ],
+  "devDependencies": {
+    "tsx": "^4.23.0",
+    "typescript": "^5",
+    "vite": "^8.1.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

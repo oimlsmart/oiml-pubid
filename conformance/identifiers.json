@@ -1,0 +1,82 @@
+{
+  "$comment": "The conformance corpus — THE shared expectations. Every consumer's tests run against THIS file; nobody pins their own copies. Entries: identifier (+ optional bibdataYear) → the parsed structure → the URN. Rejections at the end.",
+  "cases": [
+    {
+      "identifier": "OIML R 60-2:2021",
+      "structure": { "series": "pub", "family": "r", "number": "60", "part": "2", "year": "2021" },
+      "urn": "urn:oiml:pub:r:60-2:2021"
+    },
+    {
+      "identifier": "OIML R 60",
+      "structure": { "series": "pub", "family": "r", "number": "60" },
+      "urn": "urn:oiml:pub:r:60"
+    },
+    {
+      "identifier": "OIML R 7",
+      "bibdataYear": "1979",
+      "structure": { "series": "pub", "family": "r", "number": "7", "year": "1979" },
+      "urn": "urn:oiml:pub:r:7:1979"
+    },
+    {
+      "identifier": "OIML B 18:2025(E)",
+      "structure": { "series": "pub", "family": "b", "number": "18", "year": "2025" },
+      "urn": "urn:oiml:pub:b:18:2025"
+    },
+    {
+      "identifier": "OIML D 11:2013",
+      "structure": { "series": "pub", "family": "d", "number": "11", "year": "2013" },
+      "urn": "urn:oiml:pub:d:11:2013"
+    },
+    {
+      "identifier": "OIML G 21:2017",
+      "structure": { "series": "pub", "family": "g", "number": "21", "year": "2017" },
+      "urn": "urn:oiml:pub:g:21:2017"
+    },
+    {
+      "identifier": "OIML E 6:2011",
+      "structure": { "series": "pub", "family": "e", "number": "6", "year": "2011" },
+      "urn": "urn:oiml:pub:e:6:2011"
+    },
+    {
+      "identifier": "OIML-CS PD-05 Edition 6 (Amendment 1)",
+      "bibdataYear": "2024",
+      "structure": { "series": "cs", "family": "pd", "number": "05", "edition": "6", "amendment": "1", "year": "2024" },
+      "urn": "urn:oiml:pub:cs:pd-05:2024"
+    },
+    {
+      "identifier": "OIML-CS PD-01 Edition 3",
+      "bibdataYear": "2024",
+      "structure": { "series": "cs", "family": "pd", "number": "01", "edition": "3", "year": "2024" },
+      "urn": "urn:oiml:pub:cs:pd-01:2024"
+    },
+    {
+      "identifier": "OIML-CS OD-01 Edition 4",
+      "bibdataYear": "2024",
+      "structure": { "series": "cs", "family": "od", "number": "01", "edition": "4", "year": "2024" },
+      "urn": "urn:oiml:pub:cs:od-01:2024"
+    },
+    {
+      "identifier": "OIML-CS OD-02 Edition 3",
+      "bibdataYear": "2024",
+      "structure": { "series": "cs", "family": "od", "number": "02", "edition": "3", "year": "2024" },
+      "urn": "urn:oiml:pub:cs:od-02:2024"
+    },
+    {
+      "identifier": "OIML-CS CID-01 Edition 6",
+      "structure": { "series": "cs", "family": "cid", "number": "01", "edition": "6" },
+      "urn": "urn:oiml:pub:cs:cid-01"
+    },
+    {
+      "identifier": "OIML-CS PD 05 Edition 6",
+      "structure": { "series": "cs", "family": "pd", "number": "05", "edition": "6" },
+      "urn": "urn:oiml:pub:cs:pd-05"
+    }
+  ],
+  "rejections": [
+    "Some Other Document",
+    "OIML X 99",
+    "OIML R 60 extra words here",
+    "OIML-CS XX-01 Edition 1",
+    "ISO 9001:2015"
+  ]
+}
