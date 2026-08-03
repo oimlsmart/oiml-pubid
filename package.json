@@ -20,6 +20,7 @@
   },
   "scripts": {
     "build": "tsc && vite build --config vite.browser.config.ts",
+    "prepare": "npm run build",
     "test": "node --test --import tsx test/*.test.ts"
   },
   "files": [
