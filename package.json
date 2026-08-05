@@ -17,7 +17,17 @@
       "types": "./dist/index.d.ts"
     },
     "./conformance": "./conformance/identifiers.json",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./urn": {
+      "browser": "./dist-browser/urn.mjs",
+      "import": "./dist/urn.js",
+      "require": "./dist/urn.js",
+      "types": "./dist/urn.d.ts"
+    },
+    "./urn-corpus": {
+      "import": "./dist/urn-corpus.js",
+      "types": "./dist/urn-corpus.d.ts"
+    }
   },
   "scripts": {
     "build": "tsc && vite build --config vite.browser.config.ts",

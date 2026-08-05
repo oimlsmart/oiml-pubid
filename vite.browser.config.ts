@@ -4,9 +4,11 @@ import { resolve } from 'node:path';
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        urn: resolve(__dirname, 'src/urn.ts'),
+      },
       formats: ['es'],
-      fileName: 'index',
     },
     outDir: resolve(__dirname, 'dist-browser'),
     emptyOutDir: true,
