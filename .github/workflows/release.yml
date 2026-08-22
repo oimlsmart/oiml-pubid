@@ -1,15 +1,22 @@
-name: Publish
+name: Release
 
-# Trusted publishing to npm via GitHub Actions OIDC — the same
-# machinery as primmel-ts (the package must be configured as a trusted
-# publisher on npm after its first manual publish, or the first publish
-# happens locally with the maintainer's npm session).
+# Publishes the package to npm on a version tag (`v*`) via npm trusted
+# publishing (GitHub Actions OIDC), the same machinery as primmel-ts.
+# No npm token is stored anywhere: the runner exchanges its OIDC
+# identity for a short-lived publish credential, and the publish
+# carries a provenance attestation bound to this repository and this
+# workflow file.
 #
-# Triggers when a GitHub Release matching `v*` is published.
+# The publish step runs ONLY once the package is registered on npm.
+# Until the one-time manual first publish and the trusted-publisher
+# enrollment on npmjs.com (runbook: docs/deployment/npm-releases.md in
+# the smart repo), the job still builds and tests the tag, then prints
+# the note and skips the publish instead of failing red.
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
@@ -20,23 +27,38 @@ jobs:
     name: Publish to npm
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Node 24
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 24
-          registry-url: https://registry.npmjs.org
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - name: Verify tag matches package version
+      - name: Verify the tag matches the package version
         run: |
           TAG="${GITHUB_REF_NAME}"
           VERSION="$(node -p "require('./package.json').version")"
           if [ "$TAG" != "v$VERSION" ]; then
-            echo "Tag $TAG does not match package.json version $VERSION"
+            echo "Tag $TAG does not match package.json version $VERSION."
             exit 1
           fi
       - run: npm run build
       - run: npm test
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ""
+      - name: Check the package is registered on npm
+        id: gate
+        run: |
+          NAME="$(node -p "require('./package.json').name")"
+          if npm view "$NAME" version > /dev/null 2>&1; then
+            echo "registered=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "registered=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Note the pending first publish
+        if: steps.gate.outputs.registered == 'false'
+        run: |
+          NAME="$(node -p "require('./package.json').name")"
+          echo "::notice::$NAME is not on the npm registry yet, the publish is skipped."
+          echo "Do the one-time manual publish and enroll the trusted publisher"
+          echo "(docs/deployment/npm-releases.md in the smart repo), then re-run this job."
+      - name: Publish with provenance
+        if: steps.gate.outputs.registered == 'true'
+        run: npm publish --provenance --access public
