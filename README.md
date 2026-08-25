@@ -36,6 +36,35 @@ lang       := "(" letter+ ")"       e.g. (E), (F), (E/F)
 amendment  := "(Amendment" n ")"
 ```
 
+## The instrument segment (TODO.register/04)
+
+Additive to the grammar — the per-serial identity of one registered
+instrument, never a reinterpretation of the publication identifiers
+above (`src/instrument.ts`, `./instrument`):
+
+```
+instrument := "urn:oiml:instrument:" authority ":" holder ":" certificate ":" serial
+link       := "/i/" authority "/" holder "/" certificate "/" serial
+authority  := the scheme authority operating the register (the register
+              operator's federation instance id, e.g. oiml-cs-hub)
+holder     := the holder organization id (the identity plane's org id)
+certificate := the certificate number the serial rides under
+serial     := the serial number
+```
+
+Every segment is pct-encoded individually (the keep-set is the URI
+unreserved characters), so a certificate number's `/` or a serial's
+`:` never splits the grammar. The link form is the GS1 Digital Link
+pattern: the serialized code on the rating plate resolves
+(`/i/<serial-identity>`) on the register's public origin.
+
+- `mintInstrumentUrn(parts)` / `instrumentLinkPath(parts)` — the two
+  canonical forms (a malformed mint — an empty segment — throws).
+- `parseInstrumentUrn(src)` / `parseInstrumentLinkPath(path)` — null
+  for every malformed shape.
+- `conformance/instruments.json` — the shared expectations for the
+  segment (`@oimlsmart/oiml-pubid/conformance/instruments`).
+
 ## Usage
 
 ```ts
