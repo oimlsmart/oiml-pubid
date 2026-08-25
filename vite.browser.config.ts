@@ -7,6 +7,7 @@ export default defineConfig({
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
         urn: resolve(__dirname, 'src/urn.ts'),
+        instrument: resolve(__dirname, 'src/instrument.ts'),
       },
       formats: ['es'],
     },

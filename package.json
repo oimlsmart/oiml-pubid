@@ -17,6 +17,13 @@
       "types": "./dist/index.d.ts"
     },
     "./conformance": "./conformance/identifiers.json",
+    "./conformance/instruments": "./conformance/instruments.json",
+    "./instrument": {
+      "browser": "./dist-browser/instrument.mjs",
+      "import": "./dist/instrument.js",
+      "require": "./dist/instrument.js",
+      "types": "./dist/instrument.d.ts"
+    },
     "./package.json": "./package.json",
     "./urn": {
       "browser": "./dist-browser/urn.mjs",

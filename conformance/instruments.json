@@ -1,0 +1,38 @@
+{
+  "$comment": "The instrument-identity conformance corpus (TODO.register/04) — THE shared expectations for the per-serial segment of the pubid grammar. Every consumer's tests run against THIS file; nobody pins their own copies. cases: parts → the canonical URN + the resolver link path (and both parse back to the same parts). rejectUrns / rejectPaths: the malformed shapes both parsers refuse with null. The additive pin: a publication URN is never an instrument identity, and an instrument URN never parses as a publication.",
+  "cases": [
+    {
+      "parts": { "authority": "oiml-cs-hub", "holder": "mfr-acme", "certificate": "R60/2021-A-EX1-26.01", "serial": "LC500-2026-0001" },
+      "urn": "urn:oiml:instrument:oiml-cs-hub:mfr-acme:R60%2F2021-A-EX1-26.01:LC500-2026-0001",
+      "path": "/i/oiml-cs-hub/mfr-acme/R60%2F2021-A-EX1-26.01/LC500-2026-0001"
+    },
+    {
+      "parts": { "authority": "nmi-example", "holder": "org-7f3a", "certificate": "DE-26-PTB-0042", "serial": "SN 0042/7" },
+      "urn": "urn:oiml:instrument:nmi-example:org-7f3a:DE-26-PTB-0042:SN%200042%2F7",
+      "path": "/i/nmi-example/org-7f3a/DE-26-PTB-0042/SN%200042%2F7"
+    },
+    {
+      "parts": { "authority": "oiml-cs-hub", "holder": "mfr-acme", "certificate": "R60/2021-A-EX1-26.01", "serial": "LC500:PROTO(2)" },
+      "urn": "urn:oiml:instrument:oiml-cs-hub:mfr-acme:R60%2F2021-A-EX1-26.01:LC500%3APROTO%282%29",
+      "path": "/i/oiml-cs-hub/mfr-acme/R60%2F2021-A-EX1-26.01/LC500%3APROTO%282%29"
+    }
+  ],
+  "rejectUrns": [
+    "urn:oiml:pub:r:60:2021",
+    "urn:oiml:instrument:oiml-cs-hub:mfr-acme:R60%2F2021-A-EX1-26.01",
+    "urn:oiml:instrument:oiml-cs-hub:mfr-acme:R60%2F2021-A-EX1-26.01:LC500-2026-0001:EXTRA",
+    "urn:oiml:instrument:oiml-cs-hub::R60%2F2021-A-EX1-26.01:LC500-2026-0001",
+    "urn:oiml:instrument:oiml-cs-hub:mfr-acme:R60%2F2021-A-EX1-26.01:LC500%2",
+    "urn:oiml:Instrument:oiml-cs-hub:mfr-acme:R60%2F2021-A-EX1-26.01:LC500-2026-0001",
+    "urn:oiml:instrument:",
+    ""
+  ],
+  "rejectPaths": [
+    "/i/oiml-cs-hub/mfr-acme/R60%2F2021-A-EX1-26.01",
+    "/i/oiml-cs-hub/mfr-acme/R60%2F2021-A-EX1-26.01/LC500-2026-0001/EXTRA",
+    "/i/oiml-cs-hub//R60%2F2021-A-EX1-26.01/LC500-2026-0001",
+    "/i/",
+    "/certificates/oiml-cs-hub/mfr-acme/R60%2F2021-A-EX1-26.01/LC500-2026-0001",
+    "/i/oiml-cs-hub/mfr-acme/R60/2021-A-EX1-26.01/LC500-2026-0001"
+  ]
+}
