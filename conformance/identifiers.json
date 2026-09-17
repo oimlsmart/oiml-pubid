@@ -19,8 +19,33 @@
     },
     {
       "identifier": "OIML B 18:2025(E)",
-      "structure": { "series": "pub", "family": "b", "number": "18", "year": "2025" },
-      "urn": "urn:oiml:pub:b:18:2025"
+      "structure": { "series": "pub", "family": "b", "number": "18", "year": "2025", "language": "en" },
+      "urn": "urn:oiml:pub:b:18:2025:en"
+    },
+    {
+      "identifier": "OIML R 60-1:2021(E)",
+      "structure": { "series": "pub", "family": "r", "number": "60", "part": "1", "year": "2021", "language": "en" },
+      "urn": "urn:oiml:pub:r:60-1:2021:en"
+    },
+    {
+      "identifier": "OIML B 10-1:2004 (F)",
+      "structure": { "series": "pub", "family": "b", "number": "10", "part": "1", "year": "2004", "language": "fr" },
+      "urn": "urn:oiml:pub:b:10-1:2004:fr"
+    },
+    {
+      "identifier": "OIML D 11:2013(E/F)",
+      "structure": { "series": "pub", "family": "d", "number": "11", "year": "2013", "language": "en-fr" },
+      "urn": "urn:oiml:pub:d:11:2013:en-fr"
+    },
+    {
+      "identifier": "OIML B 14:2006 (Fra)",
+      "structure": { "series": "pub", "family": "b", "number": "14", "year": "2006", "language": "fr" },
+      "urn": "urn:oiml:pub:b:14:2006:fr"
+    },
+    {
+      "identifier": "OIML B 12:2004 (A)",
+      "structure": { "series": "pub", "family": "b", "number": "12", "year": "2004", "language": "ar" },
+      "urn": "urn:oiml:pub:b:12:2004:ar"
     },
     {
       "identifier": "OIML D 11:2013",
@@ -78,18 +103,18 @@
     },
     {
       "identifier": "OIML S 6:2011(en)",
-      "structure": {"series": "pub", "family": "s", "number": "6", "year": "2011"},
-      "urn": "urn:oiml:pub:s:6:2011"
+      "structure": {"series": "pub", "family": "s", "number": "6", "year": "2011", "language": "en"},
+      "urn": "urn:oiml:pub:s:6:2011:en"
     },
     {
       "identifier": "OIML E 5 6th Edition 2015 (E)",
-      "structure": {"series": "pub", "family": "e", "number": "5", "year": "2015", "edition": "6"},
-      "urn": "urn:oiml:pub:e:5:2015"
+      "structure": {"series": "pub", "family": "e", "number": "5", "year": "2015", "edition": "6", "language": "en"},
+      "urn": "urn:oiml:pub:e:5:2015:en"
     },
     {
       "identifier": "OIML D 2 Edition 1999 (E)",
-      "structure": {"series": "pub", "family": "d", "number": "2", "year": "1999"},
-      "urn": "urn:oiml:pub:d:2:1999"
+      "structure": {"series": "pub", "family": "d", "number": "2", "year": "1999", "language": "en"},
+      "urn": "urn:oiml:pub:d:2:1999:en"
     },
     {
       "identifier": "OIML R 138:2009 Amendment 1",

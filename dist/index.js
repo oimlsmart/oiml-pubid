@@ -51,6 +51,36 @@ function tokenize(src) {
 }
 const PUB_FAMILIES = new Set(['r', 'b', 'd', 'g', 'e', 'v', 's']);
 const CS_FAMILIES = new Set(['pd', 'od', 'cid']);
+// OIML language markers as authored (single letters, ISO 639-2/3, and
+// stray variants) → the canonical ISO 639-1 code used in URNs.
+const LANG_CODE_MAP = {
+    e: 'en', f: 'fr', a: 'ar',
+    en: 'en', fr: 'fr', ar: 'ar',
+    eng: 'en', fra: 'fr', ara: 'ar',
+    sr: 'sr', srp: 'sr',
+    uk: 'uk', ua: 'uk', ukr: 'uk',
+    zh: 'zh', zho: 'zh', chi: 'zh', cn: 'zh',
+    de: 'de', deu: 'de', ger: 'de',
+    ru: 'ru', rus: 'ru',
+    pl: 'pl', pol: 'pl',
+    pt: 'pt', por: 'pt',
+    es: 'es', spa: 'es', sp: 'es',
+    fa: 'fa', fas: 'fa', fara: 'fa',
+    ro: 'ro', ron: 'ro',
+};
+/** Normalize a parenthesized language marker — "(E)", "(E/F)",
+ *  "(Fra)", "(en)" — to the URN form: mapped codes, sorted
+ *  alphabetically, hyphen-separated ("en-fr"). Returns undefined when
+ *  the marker is not a language marker (not letters-only segments). */
+function languageFromMarker(raw) {
+    const segments = raw.toLowerCase().split('/').map(s => s.trim()).filter(Boolean);
+    if (segments.length === 0)
+        return undefined;
+    if (!segments.every(s => /^[a-z]+$/.test(s)))
+        return undefined;
+    const mapped = segments.map(s => LANG_CODE_MAP[s] ?? s);
+    return [...new Set(mapped)].sort().join('-');
+}
 /** Parse an OIML publication identifier. Returns null when the shape
  *  is not an OIML pubid (the caller decides the fallback). */
 function parseOimlPubid(src, bibdataYear = '') {
@@ -96,6 +126,7 @@ function parseOimlPubid(src, bibdataYear = '') {
     let year;
     let edition;
     let amendment;
+    let language;
     if (peek()?.kind === 'punct' && peek().value === ':' && t[i + 1]?.kind === 'num' && t[i + 1].value.length === 4) {
         eat();
         year = eat().value;
@@ -126,21 +157,29 @@ function parseOimlPubid(src, bibdataYear = '') {
                 eat();
             continue;
         }
-        // ["(" lang ")"] — optional, discarded (the language marker)
+        // ["(" lang ")"] — the language marker, captured when it parses as one
         if (peek()?.kind === 'punct' && peek().value === '(') {
             let depth = 0;
             let j = i;
+            const inner = [];
             while (j < t.length && !(t[j].kind === 'punct' && t[j].value === ')' && depth === 1)) {
-                if (t[j].kind === 'punct' && t[j].value === '(')
+                if (t[j].kind === 'punct' && t[j].value === '(') {
                     depth++;
+                    j++;
+                    continue;
+                }
+                inner.push(t[j].value);
                 j++;
                 if (depth === 1 && t[j]?.kind === 'punct' && t[j].value === ')')
                     break;
             }
             if (j < t.length) {
+                const lang = languageFromMarker(inner.join(' '));
+                if (lang)
+                    language = lang;
                 i = j + 1;
-                continue;
-            } // consumed "( … )"
+                continue; // consumed "( … )"
+            }
         }
         // ["Amendment" [":" | n] [year]] — the trailing amendment marker,
         // no parens ("OIML R 138:2009 Amendment 1", "…Amendment:2009")
@@ -179,18 +218,20 @@ function parseOimlPubid(src, bibdataYear = '') {
         ...(year ? { year } : bibdataYear ? { year: bibdataYear } : {}),
         ...(edition ? { edition } : {}),
         ...(amendment ? { amendment } : {}),
+        ...(language ? { language } : {}),
     };
 }
 /** The OIML URN convention, composed from the parsed structure:
- *  pub series → urn:oiml:pub:{family}:{number}[-{part}][:{year}]
- *  cs series  → urn:oiml:pub:cs:{family}-{number}[:{year}] */
+ *  pub series → urn:oiml:pub:{family}:{number}[-{part}][:{year}][:{language}]
+ *  cs series  → urn:oiml:pub:cs:{family}-{number}[:{year}][:{language}] */
 function urnForOimlPubid(pubid) {
     const year = pubid.year ? `:${pubid.year}` : '';
+    const lang = pubid.language ? `:${pubid.language}` : '';
     if (pubid.series === 'cs') {
-        return `urn:oiml:pub:cs:${pubid.family}-${pubid.number}${year}`;
+        return `urn:oiml:pub:cs:${pubid.family}-${pubid.number}${year}${lang}`;
     }
     const part = pubid.part ? `-${pubid.part}` : '';
-    return `urn:oiml:pub:${pubid.family}:${pubid.number}${part}${year}`;
+    return `urn:oiml:pub:${pubid.family}:${pubid.number}${part}${year}${lang}`;
 }
 /** The one-call convenience: identifier (+ optional bibdata year) →
  *  the URN, or null when the identifier is not an OIML pubid. */
