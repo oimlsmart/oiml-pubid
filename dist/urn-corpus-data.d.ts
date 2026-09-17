@@ -4,6 +4,7 @@ export interface UrnCorpus {
         doctype?: string;
         docnumber?: string;
         year?: string;
+        language?: string;
         fragment?: unknown;
         smartArtifact?: unknown;
     }>;

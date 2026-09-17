@@ -21,7 +21,7 @@ import {
 } from './urn.js'
 
 interface Corpus {
-  parse: Array<{ urn: string; doctype?: string; docnumber?: string; year?: string; fragment?: unknown; smartArtifact?: unknown }>
+  parse: Array<{ urn: string; doctype?: string; docnumber?: string; year?: string; language?: string; fragment?: unknown; smartArtifact?: unknown }>
   reject: string[]
   roundTrips: string[]
   citations: Array<{ urn: string; full: string; short?: string }>
@@ -53,6 +53,7 @@ export function corpusResults(): string[] {
     if (p.doctype !== undefined) check(`parse ${p.urn} doctype`, parsed.doctype, p.doctype)
     if (p.docnumber !== undefined) check(`parse ${p.urn} docnumber`, parsed.docnumber, p.docnumber)
     if (p.year !== undefined) check(`parse ${p.urn} year`, parsed.year, p.year)
+    if (p.language !== undefined) check(`parse ${p.urn} language`, parsed.language, p.language)
     if (p.fragment !== undefined) {
       if (p.fragment === null) check(`parse ${p.urn} fragment`, parsed.fragment ?? null, null)
       else {
