@@ -1,7 +1,7 @@
 {
   "name": "@oimlsmart/oiml-pubid",
-  "version": "1.1.0",
-  "description": "The OIML publication identifier system: the parser and the URN convention \u2014 the single source of truth for every OIML SMART consumer.",
+  "version": "1.1.1",
+  "description": "The OIML publication identifier system: the parser and the URN convention — the single source of truth for every OIML SMART consumer.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
