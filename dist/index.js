@@ -7,7 +7,7 @@
 // The grammar (from the OIML corpus):
 //   pubid      := "OIML" ["-CS"] family number ["-" part] [":" year]
 //                 ["(" lang ")"] ["Edition" n] ["(Amendment" n ")"]
-//   family     := "R" | "B" | "D" | "G" | "E" | "V"      (publications)
+//   family     := "R" | "B" | "D" | "G" | "E" | "V" | "S"  (publications; S = seminar report)
 //   family     := "PD" | "OD" | "CID"                     (the CS family)
 //   number     := digits · part := digits · year := 4 digits
 //   lang       := "(" letter+ ")"          e.g. (E), (F), (E/F)
@@ -49,7 +49,7 @@ function tokenize(src) {
     }
     return out;
 }
-const PUB_FAMILIES = new Set(['r', 'b', 'd', 'g', 'e', 'v']);
+const PUB_FAMILIES = new Set(['r', 'b', 'd', 'g', 'e', 'v', 's']);
 const CS_FAMILIES = new Set(['pd', 'od', 'cid']);
 /** Parse an OIML publication identifier. Returns null when the shape
  *  is not an OIML pubid (the caller decides the fallback). */
@@ -94,40 +94,79 @@ function parseOimlPubid(src, bibdataYear = '') {
     }
     // [":" year]
     let year;
+    let edition;
+    let amendment;
     if (peek()?.kind === 'punct' && peek().value === ':' && t[i + 1]?.kind === 'num' && t[i + 1].value.length === 4) {
         eat();
         year = eat().value;
     }
-    // ["(" lang ")"] — optional, discarded (the language marker)
-    if (peek()?.kind === 'punct' && peek().value === '(') {
-        let depth = 0;
-        let j = i;
-        while (j < t.length && !(t[j].kind === 'punct' && t[j].value === ')' && depth === 1)) {
-            if (t[j].kind === 'punct' && t[j].value === '(')
-                depth++;
-            j++;
-            if (depth === 1 && t[j]?.kind === 'punct' && t[j].value === ')')
-                break;
-        }
-        if (j < t.length)
-            i = j + 1; // consumed "( … )"
-    }
-    // ["Edition" n]
-    let edition;
-    if (peek()?.kind === 'word' && peek().value.toLowerCase() === 'edition' && t[i + 1]?.kind === 'num') {
-        eat();
+    // ["6th" "Edition" year] — the ordinal edition form ("OIML E 5 6th
+    // Edition 2015"): the ordinal's year IS the publication year.
+    if (peek()?.kind === 'num' && t[i + 1]?.kind === 'word' && /^(st|nd|rd|th)$/i.test(t[i + 1].value)
+        && t[i + 2]?.kind === 'word' && t[i + 2].value.toLowerCase() === 'edition'
+        && t[i + 3]?.kind === 'num' && t[i + 3].value.length === 4) {
         edition = eat().value;
+        eat();
+        eat();
+        year = eat().value;
     }
-    // ["(Amendment" n ")"]
-    let amendment;
-    if (peek()?.kind === 'punct' && peek().value === '('
-        && t[i + 1]?.kind === 'word' && t[i + 1].value.toLowerCase() === 'amendment'
-        && t[i + 2]?.kind === 'num') {
-        eat();
-        eat();
-        amendment = eat().value;
-        if (peek()?.kind === 'punct' && peek().value === ')')
+    // The trailing tail — language parens, the edition word, the amendment
+    // marker — appears in either order in the wild ("OIML R 106(E)" vs
+    // "OIML D 2 Edition 1999 (E)"), so consume whatever matches until the
+    // tail stops matching.
+    for (;;) {
+        // ["(Amendment" n ")"]
+        if (peek()?.kind === 'punct' && peek().value === '('
+            && t[i + 1]?.kind === 'word' && t[i + 1].value.toLowerCase() === 'amendment'
+            && t[i + 2]?.kind === 'num') {
             eat();
+            eat();
+            amendment = eat().value;
+            if (peek()?.kind === 'punct' && peek().value === ')')
+                eat();
+            continue;
+        }
+        // ["(" lang ")"] — optional, discarded (the language marker)
+        if (peek()?.kind === 'punct' && peek().value === '(') {
+            let depth = 0;
+            let j = i;
+            while (j < t.length && !(t[j].kind === 'punct' && t[j].value === ')' && depth === 1)) {
+                if (t[j].kind === 'punct' && t[j].value === '(')
+                    depth++;
+                j++;
+                if (depth === 1 && t[j]?.kind === 'punct' && t[j].value === ')')
+                    break;
+            }
+            if (j < t.length) {
+                i = j + 1;
+                continue;
+            } // consumed "( … )"
+        }
+        // ["Amendment" [":" | n] [year]] — the trailing amendment marker,
+        // no parens ("OIML R 138:2009 Amendment 1", "…Amendment:2009")
+        if (peek()?.kind === 'word' && peek().value.toLowerCase() === 'amendment') {
+            eat();
+            if (peek()?.kind === 'punct' && peek().value === ':' && t[i + 1]?.kind === 'num') {
+                eat();
+                amendment = eat().value;
+            }
+            else if (peek()?.kind === 'num') {
+                amendment = eat().value;
+            }
+            continue;
+        }
+        // ["Edition" n] — an edition ordinal; a 4-digit value is a YEAR
+        // ("OIML D 2 Edition 1999 (E)", the printed bibliography form)
+        if (peek()?.kind === 'word' && peek().value.toLowerCase() === 'edition' && t[i + 1]?.kind === 'num') {
+            eat();
+            const v = eat().value;
+            if (v.length === 4)
+                year ??= v;
+            else
+                edition ??= v;
+            continue;
+        }
+        break;
     }
     // Anything left unparsed means the shape was not an OIML pubid.
     if (i < t.length)

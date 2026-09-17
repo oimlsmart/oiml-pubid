@@ -34,7 +34,8 @@ var t = /* @__PURE__ */ new Set([
 	"d",
 	"g",
 	"e",
-	"v"
+	"v",
+	"s"
 ]), n = /* @__PURE__ */ new Set([
 	"pd",
 	"od",
@@ -54,16 +55,33 @@ function r(r, i = "") {
 	if (p?.kind !== "num") return null;
 	let m;
 	s()?.kind === "punct" && s().value === "-" && a[o + 1]?.kind === "num" && (c(), m = c().value);
-	let h;
-	if (s()?.kind === "punct" && s().value === ":" && a[o + 1]?.kind === "num" && a[o + 1].value.length === 4 && (c(), h = c().value), s()?.kind === "punct" && s().value === "(") {
-		let e = 0, t = o;
-		for (; t < a.length && (a[t].kind !== "punct" || a[t].value !== ")" || e !== 1) && (a[t].kind === "punct" && a[t].value === "(" && e++, t++, e !== 1 || a[t]?.kind !== "punct" || a[t].value !== ")"););
-		t < a.length && (o = t + 1);
+	let h, g, _;
+	for (s()?.kind === "punct" && s().value === ":" && a[o + 1]?.kind === "num" && a[o + 1].value.length === 4 && (c(), h = c().value), s()?.kind === "num" && a[o + 1]?.kind === "word" && /^(st|nd|rd|th)$/i.test(a[o + 1].value) && a[o + 2]?.kind === "word" && a[o + 2].value.toLowerCase() === "edition" && a[o + 3]?.kind === "num" && a[o + 3].value.length === 4 && (g = c().value, c(), c(), h = c().value);;) {
+		if (s()?.kind === "punct" && s().value === "(" && a[o + 1]?.kind === "word" && a[o + 1].value.toLowerCase() === "amendment" && a[o + 2]?.kind === "num") {
+			c(), c(), _ = c().value, s()?.kind === "punct" && s().value === ")" && c();
+			continue;
+		}
+		if (s()?.kind === "punct" && s().value === "(") {
+			let e = 0, t = o;
+			for (; t < a.length && (a[t].kind !== "punct" || a[t].value !== ")" || e !== 1) && (a[t].kind === "punct" && a[t].value === "(" && e++, t++, e !== 1 || a[t]?.kind !== "punct" || a[t].value !== ")"););
+			if (t < a.length) {
+				o = t + 1;
+				continue;
+			}
+		}
+		if (s()?.kind === "word" && s().value.toLowerCase() === "amendment") {
+			c(), s()?.kind === "punct" && s().value === ":" && a[o + 1]?.kind === "num" ? (c(), _ = c().value) : s()?.kind === "num" && (_ = c().value);
+			continue;
+		}
+		if (s()?.kind === "word" && s().value.toLowerCase() === "edition" && a[o + 1]?.kind === "num") {
+			c();
+			let e = c().value;
+			e.length === 4 ? h ??= e : g ??= e;
+			continue;
+		}
+		break;
 	}
-	let g;
-	s()?.kind === "word" && s().value.toLowerCase() === "edition" && a[o + 1]?.kind === "num" && (c(), g = c().value);
-	let _;
-	return s()?.kind === "punct" && s().value === "(" && a[o + 1]?.kind === "word" && a[o + 1].value.toLowerCase() === "amendment" && a[o + 2]?.kind === "num" && (c(), c(), _ = c().value, s()?.kind === "punct" && s().value === ")" && c()), o < a.length ? null : {
+	return o < a.length ? null : {
 		series: u,
 		family: f,
 		number: p.value,
