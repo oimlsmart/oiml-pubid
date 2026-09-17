@@ -33,6 +33,8 @@ function corpusResults() {
             check(`parse ${p.urn} docnumber`, parsed.docnumber, p.docnumber);
         if (p.year !== undefined)
             check(`parse ${p.urn} year`, parsed.year, p.year);
+        if (p.language !== undefined)
+            check(`parse ${p.urn} language`, parsed.language, p.language);
         if (p.fragment !== undefined) {
             if (p.fragment === null)
                 check(`parse ${p.urn} fragment`, parsed.fragment ?? null, null);

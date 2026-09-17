@@ -15,7 +15,8 @@ pins their own expectations — the conformance corpus is shared.
   returns null for non-OIML shapes.
 - `urnForOimlPubid(pubid) → string` — the OIML URN convention,
   composed from the parsed structure:
-  - pub series → `urn:oiml:pub:{family}:{number}[-{part}][:{year}]`
+  - pub series → `urn:oiml:pub:{family}:{number}[-{part}][:{year}][:{lang}]`
+    (the language marker composes into the URN: (E)→en, (E/F)→en-fr)
   - CS series → `urn:oiml:pub:cs:{family}-{number}[:{year}]`
 - `urnForIdentifier(src, bibdataYear?) → string | null` — the
   one-call convenience.

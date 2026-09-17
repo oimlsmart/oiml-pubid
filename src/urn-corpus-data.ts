@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────
 
 export interface UrnCorpus {
-  parse: Array<{ urn: string; doctype?: string; docnumber?: string; year?: string; fragment?: unknown; smartArtifact?: unknown }>
+  parse: Array<{ urn: string; doctype?: string; docnumber?: string; year?: string; language?: string; fragment?: unknown; smartArtifact?: unknown }>
   reject: string[]
   roundTrips: string[]
   citations: Array<{ urn: string; full: string; short?: string }>
@@ -24,6 +24,27 @@ export const URN_CORPUS: UrnCorpus = {
       "year": "2021",
       "fragment": null,
       "smartArtifact": null
+    },
+    {
+      "urn": "urn:oiml:pub:r:60:2021:en",
+      "doctype": "r",
+      "docnumber": "60",
+      "year": "2021",
+      "language": "en"
+    },
+    {
+      "urn": "urn:oiml:pub:r:60-1:2021:en-fr",
+      "doctype": "r",
+      "docnumber": "60-1",
+      "year": "2021",
+      "language": "en-fr"
+    },
+    {
+      "urn": "urn:oiml:pub:b:1:1968:fr",
+      "doctype": "b",
+      "docnumber": "1",
+      "year": "1968",
+      "language": "fr"
     },
     {
       "urn": "urn:oiml:pub:r:60-1:2021",
@@ -151,6 +172,8 @@ export const URN_CORPUS: UrnCorpus = {
     "urn:oiml:r:60:2021"
   ],
   "roundTrips": [
+    "urn:oiml:pub:r:60:2021:en",
+    "urn:oiml:pub:r:60-1:2021:en-fr",
     "urn:oiml:pub:r:60-1:2021#clause-5.4",
     "urn:oiml:pub:r:60:2021:req:/metrological/mpe",
     "urn:oiml:pub:r:60:2021:conf:/metrological-tests/creep",
@@ -163,6 +186,10 @@ export const URN_CORPUS: UrnCorpus = {
   "citations": [
     {
       "urn": "urn:oiml:pub:r:60:2021",
+      "full": "OIML R 60:2021"
+    },
+    {
+      "urn": "urn:oiml:pub:r:60:2021:en",
       "full": "OIML R 60:2021"
     },
     {
