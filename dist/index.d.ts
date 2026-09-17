@@ -9,6 +9,8 @@ export interface OimlPubid {
     part?: string;
     /** The year (from the identifier, else the bibdata date). */
     year?: string;
+    /** The canonical ISO 639-1 language code(s), sorted and hyphen-separated. */
+    language?: string;
     /** The edition number (CS family). */
     edition?: string;
     /** The amendment number (CS family). */
@@ -18,8 +20,8 @@ export interface OimlPubid {
  *  is not an OIML pubid (the caller decides the fallback). */
 export declare function parseOimlPubid(src: string, bibdataYear?: string): OimlPubid | null;
 /** The OIML URN convention, composed from the parsed structure:
- *  pub series → urn:oiml:pub:{family}:{number}[-{part}][:{year}]
- *  cs series  → urn:oiml:pub:cs:{family}-{number}[:{year}] */
+ *  pub series → urn:oiml:pub:{family}:{number}[-{part}][:{year}][:{language}]
+ *  cs series  → urn:oiml:pub:cs:{family}-{number}[:{year}][:{language}] */
 export declare function urnForOimlPubid(pubid: OimlPubid): string;
 /** The one-call convenience: identifier (+ optional bibdata year) →
  *  the URN, or null when the identifier is not an OIML pubid. */
