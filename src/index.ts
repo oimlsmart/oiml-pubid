@@ -210,6 +210,15 @@ export function parseOimlPubid(src: string, bibdataYear = ''): OimlPubid | null 
       }
       continue;
     }
+    // [","] ["Edition" n] — an edition ordinal; a 4-digit value is a
+    // YEAR ("OIML D 2 Edition 1999 (E)"; the comma form "OIML D 12,
+    // edition 1986 (E)" is the same construct — the 1.2.0 unordered
+    // tail lost the comma the old edition_portion consumed)
+    if (peek()?.kind === 'punct' && peek()!.value === ','
+      && t[i + 1]?.kind === 'word' && t[i + 1]!.value.toLowerCase() === 'edition') {
+      eat();
+      continue;
+    }
     // ["Edition" n] — an edition ordinal; a 4-digit value is a YEAR
     // ("OIML D 2 Edition 1999 (E)", the printed bibliography form)
     if (peek()?.kind === 'word' && peek()!.value.toLowerCase() === 'edition' && t[i + 1]?.kind === 'num') {
